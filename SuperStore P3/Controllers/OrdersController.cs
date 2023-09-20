@@ -8,49 +8,48 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Data;
+using EcoPower_Logistics.Repositories;
 
 namespace Controllers
 {
     [Authorize]
     public class OrdersController : Controller
     {
-        private readonly SuperStoreContext _context;
+        private readonly IOrderRepository _orderRepo;
 
-        public OrdersController(SuperStoreContext context)
+        public OrdersController(IOrderRepository orderRepo)
         {
-            _context = context;
+            _orderRepo = orderRepo;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var superStoreContext = _context.Orders.Include(o => o.Customer);
-            return View(await superStoreContext.ToListAsync());
+            OrderRepository orderRepo = new OrderRepository();
+            var results = orderRepo.GetAll();
+            return View(results);
         }
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
+            OrderRepository orderRepo = new OrderRepository();
+            var results = orderRepo.GetOrderById(id.Value);
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            if (id == null)
             {
-                return NotFound();
+                return View(null);
             }
-
-            return View(order);
+            else
+            {
+                return View(results);
+            }
         }
 
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
+            //ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
             return View();
         }
 
