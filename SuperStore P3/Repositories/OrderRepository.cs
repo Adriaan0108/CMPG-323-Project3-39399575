@@ -4,7 +4,7 @@ using Models;
 
 namespace EcoPower_Logistics.Repositories
 {
-    public class OrderRepository : GenericRepository<Order>
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         //private readonly SuperStoreContext _context = new SuperStoreContext();
 
