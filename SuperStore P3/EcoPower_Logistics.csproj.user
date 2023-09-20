@@ -11,5 +11,6 @@
     <WebStackScaffolding_DbContextTypeFullName>SuperStore_P3.Data.SuperStoreContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_IsViewGenerationSelected>True</WebStackScaffolding_IsViewGenerationSelected>
+    <NameOfLastUsedPublishProfile>C:\Users\Adriaan\Documents\GitHub\CMPG-323-Project3-39399575\SuperStore P3\Properties\PublishProfiles\EcoPowerLogistics20230920191933 - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
