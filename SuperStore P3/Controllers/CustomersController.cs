@@ -8,37 +8,37 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Models;
+using EcoPower_Logistics.Services;
 
 namespace Controllers
 {
     [Authorize]
     public class CustomersController : Controller
     {
-        private readonly SuperStoreContext _context;
+        private readonly ICustomerService _custService;
 
-        public CustomersController(SuperStoreContext context)
+        public CustomersController(ICustomerService custService)
         {
-            _context = context;
+            _custService = custService;
         }
 
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return _context.Customers != null ?
-                        View(await _context.Customers.ToListAsync()) :
-                        Problem("Entity set 'SuperStoreContext.Customers'  is null.");
+            ViewData["CustomerId"] = new SelectList(_custService.GetAllCustomers(), "CustomerId");
+            return View(_custService.GetAllCustomers().ToList());
         }
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Customers == null)
+            if (id == null || _custService.GetCustomerById == null)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer = _custService.GetCustomerById(id);
+
             if (customer == null)
             {
                 return NotFound();
@@ -60,28 +60,26 @@ namespace Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CustomerId,CustomerTitle,CustomerName,CustomerSurname,CellPhone")] Customer customer)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
+            _custService.AddCustomer(customer);
+            return RedirectToAction("Index");
         }
 
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Customers == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = _custService.GetCustomerById(id);
+
             if (customer == null)
             {
                 return NotFound();
             }
+
+            ViewData["CustomerId"] = new SelectList(_custService.GetAllCustomers(), "CustomerId");
             return View(customer);
         }
 
@@ -97,39 +95,35 @@ namespace Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.CustomerId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _custService.UpdateCustomer(customer);
             }
-            return View(customer);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerExists(customer.CustomerId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Customers == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer = _custService.GetCustomerById(id);
+
             if (customer == null)
             {
                 return NotFound();
@@ -143,23 +137,14 @@ namespace Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Customers == null)
-            {
-                return Problem("Entity set 'SuperStoreContext.Customers'  is null.");
-            }
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer != null)
-            {
-                _context.Customers.Remove(customer);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var customer = _custService.GetCustomerById(id);
+            _custService.RemoveCustomer(customer);
+            return RedirectToAction("Index");
         }
 
         private bool CustomerExists(int id)
         {
-            return (_context.Customers?.Any(e => e.CustomerId == id)).GetValueOrDefault();
+            return _custService.GetCustomerById(id) != null;
         }
     }
 }

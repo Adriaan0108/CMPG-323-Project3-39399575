@@ -15,42 +15,65 @@ namespace EcoPower_Logistics.Repositories
 
         public void Add(T entity)
         {
-            _context.Set<T>().Add(entity);
-        }
-
-        public void AddRange(IEnumerable<T> entities)
-        {
-            _context.Set<T>().AddRange(entities);
-        }
-
-        public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
-        {
-            return _context.Set<T>().Where(expression);
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(entity)} must not be null");
+            }
+            try
+            {
+                _context.Add(entity);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be saved: {ex.Message}");
+            }
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>().ToList();
-        }
-
-        public T GetByID(int id)
-        {
-            return _context.Set<T>().Find(id);
+            try
+            {
+                return _context.Set<T>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Could not retrieve entities: {ex.Message}");
+            }
         }
 
         public void Remove(T entity)
         {
-            _context.Set<T>().Remove(entity);
-        }
-
-        public void RemoveRange(IEnumerable<T> entities)
-        {
-            _context.Set<T>().RemoveRange(entities);
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(entity)} must not be null");
+            }
+            try
+            {
+                _context.Remove(entity);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Could not remove entity: {ex.Message}");
+            }
         }
 
         public void Update(T entity)
         {
-            _context.Update(entity);
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(entity)} must not be null");
+            }
+            try
+            {
+                _context.Update(entity);
+                _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Could not update entity: {ex.Message}");
+            }
         }
     }
 }
