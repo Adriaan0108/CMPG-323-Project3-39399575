@@ -4,7 +4,8 @@ Link to API: <https://ecopowerlogistics20230920191933.azurewebsites.net>
 How to use the app:/
 
 When the app is launched, the following page is displayed:/
-<img src="/images/register.png" alt="Register">/
+![register](https://github.com/Adriaan0108/CMPG-323-Project3-39399575/assets/112950444/176f7340-6d18-476c-ae36-eb60c4867b2e)
+
 If you have not registered before, click on Register and enter your credentials./
 If you have registered, click on Login and enter your credentials./
 
