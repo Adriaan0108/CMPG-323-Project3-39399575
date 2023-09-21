@@ -17,11 +17,13 @@ namespace Controllers
     {
         private readonly IOrderService _orderService;
         private readonly ICustomerService _custService;
+        private readonly IProductService _prodService;
 
-        public OrdersController(IOrderService orderService, ICustomerService custService)
+        public OrdersController(IOrderService orderService, ICustomerService custService, IProductService prodService)
         {
             _orderService = orderService;
             _custService = custService;
+            _prodService = prodService;
         }
 
         // GET: Orders
