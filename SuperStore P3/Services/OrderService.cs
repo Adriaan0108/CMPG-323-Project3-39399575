@@ -22,7 +22,7 @@ namespace EcoPower_Logistics.Services
             return _orderRepo.GetAll().ToList();
         }
 
-        public Order GetOrderById(Guid? id)
+        public Order GetOrderById(int? id)
         {
             return _orderRepo.GetAll().FirstOrDefault(m => m.OrderId == id);
         }

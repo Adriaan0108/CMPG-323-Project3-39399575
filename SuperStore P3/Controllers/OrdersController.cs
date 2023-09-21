@@ -15,14 +15,11 @@ namespace Controllers
     [Authorize]
     public class OrdersController : Controller
     {
-        private readonly IOrderDetailsService _detailService;
-        private readonly IProductService _prodService;
         private readonly IOrderService _orderService;
         private readonly ICustomerService _custService;
 
-        public OrdersController(IProductService prodService, IOrderService orderService, ICustomerService custService)
+        public OrdersController(IOrderService orderService, ICustomerService custService)
         {
-            _prodService = prodService;
             _orderService = orderService;
             _custService = custService;
         }
@@ -35,7 +32,7 @@ namespace Controllers
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _orderService.GetOrderById == null)
             {
@@ -55,7 +52,8 @@ namespace Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_custService.GetAllCustomers(), "CustomerId");
+            var cust = _custService.GetAllCustomers();
+            ViewData["CustomerId"] = new SelectList(cust, "CustomerId", "CustomerId");
             return View();
         }
 
@@ -66,14 +64,12 @@ namespace Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
         {
-            order.OrderId = Guid.NewGuid();
-            order.OrderDate = DateTime.Now;
             _orderService.AddOrder(order);
             return RedirectToAction("Index");
         }
 
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -87,7 +83,7 @@ namespace Controllers
                 return NotFound();
             }
 
-            ViewData["CustomerId"] = new SelectList(_custService.GetAllCustomers(), "CustomerId");
+            ViewData["CustomerId"] = new SelectList(_custService.GetAllCustomers(), "CustomerId", "CustomerId");
             return View(order);
         }
 
@@ -96,7 +92,7 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
         {
             if (id != order.OrderId)
             {
@@ -120,13 +116,10 @@ namespace Controllers
             }
 
             return RedirectToAction("Index");
-
-            //ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
-            //return View(order);
         }
 
         // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -146,14 +139,14 @@ namespace Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = _orderService.GetOrderById(id);
             _orderService.RemoveOrder(order);
             return RedirectToAction("Index");
         }
 
-        private bool OrderExists(Guid id)
+        private bool OrderExists(int id)
         {
             return _orderService.GetOrderById(id) != null;
         }

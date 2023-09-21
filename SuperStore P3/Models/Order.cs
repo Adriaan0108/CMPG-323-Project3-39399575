@@ -12,7 +12,7 @@ namespace Models
         }
 
         [DisplayName("Order ID")]
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
         [DisplayName("Order Date")]
         public DateTime OrderDate { get; set; }
         [DisplayName("Customer ID")]

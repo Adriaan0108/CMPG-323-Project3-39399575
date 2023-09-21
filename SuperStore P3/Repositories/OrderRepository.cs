@@ -10,7 +10,7 @@ namespace EcoPower_Logistics.Repositories
 
         public OrderRepository(SuperStoreContext context) : base(context) { }
 
-        public Order GetOrderById(Guid? id)
+        public Order GetOrderById(int? id)
         {
             /*
             return _context.Orders

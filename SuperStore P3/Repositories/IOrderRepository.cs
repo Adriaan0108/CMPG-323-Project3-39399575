@@ -4,7 +4,7 @@ namespace EcoPower_Logistics.Repositories
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        Order GetOrderById(Guid? id);
+        Order GetOrderById(int? id);
         IEnumerable<Order> GetAllOrders();
         void AddOrder(Order order);
         void UpdateOrder(Order order);
