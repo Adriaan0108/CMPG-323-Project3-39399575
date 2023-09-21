@@ -4,7 +4,7 @@ namespace EcoPower_Logistics.Services
 {
     public interface IOrderService
     {
-        Order GetOrderById(int? id);
+        Order GetOrderById(Guid? id);
         IEnumerable<Order> GetAllOrders();
         void AddOrder(Order order);
         void RemoveOrder(Order order);
